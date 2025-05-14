@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longyi.shopping.mapper.GoodsMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="com.longyi.shopping.entity.Goods">
+                    <id column="id" property="id" />
+                    <result column="name" property="name" />
+                    <result column="business" property="business" />
+                    <result column="type" property="type" />
+                    <result column="image" property="image" />
+                    <result column="price" property="price" />
+                    <result column="remark" property="remark" />
+                    <result column="count" property="count" />
+                    <result column="unit" property="unit" />
+                    <result column="sale" property="sale" />
+                    <result column="create_time" property="createTime" />
+                    <result column="click" property="click" />
+                    <result column="collect" property="collect" />
+                    <result column="comment" property="comment" />
+                    <result column="good" property="good" />
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+            id, name, business, type, image, price, remark, count, unit, sale, create_time, click, collect, comment, good
+        </sql>
+
+    <!-- 分页查询 -->
+    <select id="PageList" resultType="com.longyi.shopping.entity.Goods">
+        select * from goods  ${ew.customSqlSegment}
+    </select>
+    <select id="goodstype" resultType="com.longyi.shopping.entity.ChartPie">
+        select type.name as name,
+               sum(goods.count) as value
+        from goods,type where goods.type=type.id
+        group by type.name
+
+    </select>
+
+</mapper>

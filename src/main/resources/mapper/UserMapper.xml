@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longyi.shopping.mapper.UserMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="com.longyi.shopping.entity.User">
+                    <id column="id" property="id" />
+                    <result column="username" property="username" />
+                    <result column="name" property="name" />
+                    <result column="password" property="password" />
+                    <result column="telephone" property="telephone" />
+                    <result column="email" property="email" />
+                    <result column="age" property="age" />
+                    <result column="sex" property="sex" />
+                    <result column="role" property="role" />
+                    <result column="status" property="status" />
+                    <result column="avatar" property="avatar" />
+                    <result column="create_time" property="createTime" />
+                    <result column="update_time" property="updateTime" />
+                    <result column="amount" property="amount" />
+                    <result column="balance" property="balance" />
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+            id, username, name, password, telephone, email, age, sex, role, status, avatar, create_time, update_time, amount, balance
+        </sql>
+
+    <!-- 分页查询 -->
+    <select id="PageList" resultType="com.longyi.shopping.entity.User">
+        select * from user  ${ew.customSqlSegment}
+    </select>
+
+    <select id="usertype" resultType="com.longyi.shopping.entity.ChartPie">
+        select case when role=3 then "用户"
+                    when role=2 then "商家"
+                    when role=1 then "管理员"
+                    when role=0 then "超级管理员"
+        else '其他'
+        end as name,
+            count(*) as value
+        from user where status=1
+        group by role
+
+    </select>
+
+
+</mapper>

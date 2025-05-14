@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longyi.shopping.mapper.RefundMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="com.longyi.shopping.entity.Refund">
+                    <id column="id" property="id" />
+                    <result column="user" property="user" />
+                    <result column="goods" property="goods" />
+                    <result column="business" property="business" />
+                    <result column="order_id" property="orderId" />
+                    <result column="money" property="money" />
+                    <result column="create_time" property="createTime" />
+                    <result column="status" property="status" />
+                    <result column="shop_id" property="shopId" />
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+            id, user, goods, business, order_id, money, create_time, status, shop_id
+        </sql>
+
+    <!-- 分页查询 -->
+    <select id="PageList" resultType="com.longyi.shopping.entity.Refund">
+        select * from refund  ${ew.customSqlSegment}
+    </select>
+
+</mapper>

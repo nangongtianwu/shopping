@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longyi.shopping.mapper.AddressMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="com.longyi.shopping.entity.Address">
+                    <id column="id" property="id" />
+                    <result column="user" property="user" />
+                    <result column="address" property="address" />
+                    <result column="province" property="province" />
+                    <result column="city" property="city" />
+                    <result column="district" property="district" />
+                    <result column="status" property="status" />
+                    <result column="name" property="name" />
+                    <result column="telephone" property="telephone" />
+                    <result column="lon" property="lon" />
+                    <result column="lat" property="lat" />
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+            id, user, address, province, city, district, status, name, telephone, lon, lat
+        </sql>
+
+    <!-- 分页查询 -->
+    <select id="PageList" resultType="com.longyi.shopping.entity.Address">
+        select * from address  ${ew.customSqlSegment}
+    </select>
+
+</mapper>

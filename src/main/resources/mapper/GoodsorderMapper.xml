@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longyi.shopping.mapper.GoodsorderMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="com.longyi.shopping.entity.Goodsorder">
+                    <id column="id" property="id" />
+                    <result column="code" property="code" />
+                    <result column="user" property="user" />
+                    <result column="money" property="money" />
+                    <result column="status" property="status" />
+                    <result column="create_time" property="createTime" />
+                    <result column="pay_time" property="payTime" />
+                    <result column="address" property="address" />
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+            id, code, user, money, status, create_time, pay_time, address
+        </sql>
+
+    <!-- 分页查询 -->
+    <select id="PageList" resultType="com.longyi.shopping.entity.Goodsorder">
+        select * from goodsorder  ${ew.customSqlSegment}
+    </select>
+
+    <select id="weekMapMoney" resultType="com.longyi.shopping.entity.ChartPie">
+        select CASE
+                   WHEN address.province LIKE '%广西壮族自治区%' THEN '广西'
+                   WHEN address.province LIKE '%宁夏回族自治区%' THEN '宁夏'
+                   WHEN address.province LIKE '%新疆维吾尔自治区%' THEN '新疆'
+                   WHEN LOCATE('省', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '省', 1)
+                   WHEN LOCATE('市', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '市', 1)
+                   WHEN LOCATE('自治区', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '自治区', 1)
+                   WHEN LOCATE('特别行政区', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '特别行政区', 1)
+                   ELSE address.province
+                   END AS name,
+               sum(goodsorder.money) as value
+        from goodsorder,address
+        WHERE goodsorder.pay_time>=DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+
+          and goodsorder.status=1 and goodsorder.address=address.id
+        group by name
+
+    </select>
+    <select id="monthMapMoney" resultType="com.longyi.shopping.entity.ChartPie">
+        select  CASE
+                    WHEN address.province LIKE '%广西壮族自治区%' THEN '广西'
+                    WHEN address.province LIKE '%宁夏回族自治区%' THEN '宁夏'
+                    WHEN address.province LIKE '%新疆维吾尔自治区%' THEN '新疆'
+                    WHEN LOCATE('省', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '省', 1)
+                    WHEN LOCATE('市', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '市', 1)
+                    WHEN LOCATE('自治区', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '自治区', 1)
+                    WHEN LOCATE('特别行政区', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '特别行政区', 1)
+                    ELSE address.province
+                    END AS name,
+                sum(goodsorder.money) as value
+        from goodsorder,address
+        WHERE goodsorder.pay_time>= DATE_FORMAT(goodsorder.pay_time,'%m-%d-01')
+          and goodsorder.status=1 and goodsorder.address=address.id
+        group by name
+    </select>
+    <select id="yearMapMoney" resultType="com.longyi.shopping.entity.ChartPie">
+        select  CASE
+                    WHEN address.province LIKE '%广西壮族自治区%' THEN '广西'
+                    WHEN address.province LIKE '%宁夏回族自治区%' THEN '宁夏'
+                    WHEN address.province LIKE '%新疆维吾尔自治区%' THEN '新疆'
+                    WHEN LOCATE('省', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '省', 1)
+                    WHEN LOCATE('市', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '市', 1)
+                    WHEN LOCATE('自治区', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '自治区', 1)
+                    WHEN LOCATE('特别行政区', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '特别行政区', 1)
+                    ELSE address.province
+                    END AS name,
+                sum(goodsorder.money) as value
+        from goodsorder,address
+        WHERE YEAR(goodsorder.pay_time)=YEAR(CURDATE())
+          and goodsorder.status=1 and goodsorder.address=address.id
+        group by name
+    </select>
+    <select id="allMapMoney" resultType="com.longyi.shopping.entity.ChartPie">
+        select  CASE
+                    WHEN address.province LIKE '%广西壮族自治区%' THEN '广西'
+                    WHEN address.province LIKE '%宁夏回族自治区%' THEN '宁夏'
+                    WHEN address.province LIKE '%新疆维吾尔自治区%' THEN '新疆'
+                    WHEN LOCATE('省', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '省', 1)
+                    WHEN LOCATE('市', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '市', 1)
+                    WHEN LOCATE('自治区', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '自治区', 1)
+                    WHEN LOCATE('特别行政区', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '特别行政区', 1)
+                    ELSE address.province
+                    END AS name,
+                sum(goodsorder.money) as value
+        from goodsorder,address
+        where
+            goodsorder.status=1
+          and goodsorder.address=address.id
+        group by name
+    </select>
+    <select id="weekMapCount" resultType="com.longyi.shopping.entity.ChartPie">
+        SELECT
+            CASE
+                WHEN address.province LIKE '%广西壮族自治区%' THEN '广西'
+                WHEN address.province LIKE '%宁夏回族自治区%' THEN '宁夏'
+                WHEN address.province LIKE '%新疆维吾尔自治区%' THEN '新疆'
+                WHEN LOCATE('省', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '省', 1)
+                WHEN LOCATE('市', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '市', 1)
+                WHEN LOCATE('自治区', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '自治区', 1)
+                WHEN LOCATE('特别行政区', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '特别行政区', 1)
+                ELSE address.province
+                END AS name,
+            count(*) AS value
+        FROM goodsorder,address
+        WHERE goodsorder.pay_time >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+          and goodsorder.status=1
+          and goodsorder.address=address.id
+        group by name
+    </select>
+
+    <select id="monthMapCount" resultType="com.longyi.shopping.entity.ChartPie">
+        SELECT
+            CASE
+                WHEN address.province LIKE '%广西壮族自治区%' THEN '广西'
+                WHEN address.province LIKE '%宁夏回族自治区%' THEN '宁夏'
+                WHEN address.province LIKE '%新疆维吾尔自治区%' THEN '新疆'
+                WHEN LOCATE('省', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '省', 1)
+                WHEN LOCATE('市', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '市', 1)
+                WHEN LOCATE('自治区', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '自治区', 1)
+                WHEN LOCATE('特别行政区', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '特别行政区', 1)
+                ELSE address.province
+                END AS name,
+            count(*) AS value
+        FROM goodsorder,address
+        WHERE goodsorder.pay_time >= DATE_FORMAT(CURDATE(), '%Y-%m-01')
+          and goodsorder.status=1
+          and goodsorder.address=address.id
+        group by 
+            name
+    </select>
+    <select id="yearMapCount" resultType="com.longyi.shopping.entity.ChartPie">
+        SELECT
+            CASE
+                WHEN address.province LIKE '%广西壮族自治区%' THEN '广西'
+                WHEN address.province LIKE '%宁夏回族自治区%' THEN '宁夏'
+                WHEN address.province LIKE '%新疆维吾尔自治区%' THEN '新疆'
+                WHEN LOCATE('省', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '省', 1)
+                WHEN LOCATE('市', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '市', 1)
+                WHEN LOCATE('自治区', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '自治区', 1)
+                WHEN LOCATE('特别行政区', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '特别行政区', 1)
+                ELSE address.province
+                END AS name,
+            count(*) AS value
+        FROM goodsorder,address
+        WHERE YEAR(goodsorder.pay_time) = YEAR(CURDATE())
+          and goodsorder.status=1
+          and goodsorder.address=address.id
+        group by
+            name
+    </select>
+
+    <select id="allMapCount" resultType="com.longyi.shopping.entity.ChartPie">
+        SELECT
+            CASE
+                WHEN address.province LIKE '%广西壮族自治区%' THEN '广西'
+                WHEN address.province LIKE '%宁夏回族自治区%' THEN '宁夏'
+                WHEN address.province LIKE '%新疆维吾尔自治区%' THEN '新疆'
+                WHEN LOCATE('省', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '省', 1)
+                WHEN LOCATE('市', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '市', 1)
+                WHEN LOCATE('自治区', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '自治区', 1)
+                WHEN LOCATE('特别行政区', address.province) > 0 THEN SUBSTRING_INDEX(address.province, '特别行政区', 1)
+                ELSE address.province
+                END AS name,
+            count(*) AS value
+        FROM goodsorder,address
+        where goodsorder.status=1
+          and goodsorder.address=address.id
+        group by name
+    </select>
+    <select id="weekMoney" resultType="com.longyi.shopping.entity.ChartPie">
+        select CASE WEEKDAY(pay_time)
+                   WHEN 0 THEN '星期一'
+                   WHEN 1 THEN '星期二'
+                   WHEN 2 THEN '星期三'
+                   WHEN 3 THEN '星期四'
+                   WHEN 4 THEN '星期五'
+                   WHEN 5 THEN '星期六'
+                   WHEN 6 THEN '星期日'
+                   END AS name,
+               sum(goodsorder.money) as value
+        from goodsorder
+        WHERE pay_time>=DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+
+          and status=1
+        group by WEEKDAY(pay_time)
+        order by WEEKDAY(pay_time) ASC
+    </select>
+    <select id="monthMoney" resultType="com.longyi.shopping.entity.ChartPie">
+        select DATE_FORMAT(pay_time,'%m月%d日')
+                   AS name,
+               sum(goodsorder.money) as value
+        from goodsorder
+        WHERE pay_time>= DATE_FORMAT(pay_time,'%m-%d-01')
+          and status=1
+        group by DATE_FORMAT(pay_time,'%m月%d日')
+        order by DATE_FORMAT(pay_time,'%m月%d日') asc
+    </select>
+    <select id="yearMoney" resultType="com.longyi.shopping.entity.ChartPie">
+        select CONCAT(MONTH(pay_time),'月')
+                   AS name,
+               sum(goodsorder.money) as value
+        from goodsorder
+        WHERE YEAR(pay_time)=YEAR(CURDATE())
+          and status=1
+        group by CONCAT(MONTH(pay_time),'月')
+        order by CONCAT(MONTH(pay_time),'月') asc
+    </select>
+    <select id="allMoney" resultType="com.longyi.shopping.entity.ChartPie">
+        select CONCAT(YEAR(pay_time),'年')
+                   AS name,
+               sum(goodsorder.money) as value
+        from goodsorder
+        where
+            status=1
+
+
+        group by CONCAT(YEAR(pay_time),'年')
+        order by CONCAT(YEAR(pay_time),'年') asc
+    </select>
+    <select id="weekCount" resultType="com.longyi.shopping.entity.ChartPie">
+        SELECT
+            CASE WEEKDAY(pay_time)
+                WHEN 0 THEN '星期一'
+                WHEN 1 THEN '星期二'
+                WHEN 2 THEN '星期三'
+                WHEN 3 THEN '星期四'
+                WHEN 4 THEN '星期五'
+                WHEN 5 THEN '星期六'
+                WHEN 6 THEN '星期日'
+                END AS name,
+            count(*) AS value
+        FROM goodsorder
+        WHERE pay_time >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+          and status=1
+        GROUP BY WEEKDAY(pay_time)
+        ORDER BY WEEKDAY(pay_time) ASC
+    </select>
+
+    <select id="monthCount" resultType="com.longyi.shopping.entity.ChartPie">
+        SELECT
+            DATE_FORMAT(pay_time, '%m月%d日') AS name,
+            count(*) AS value
+        FROM goodsorder
+        WHERE pay_time >= DATE_FORMAT(CURDATE(), '%Y-%m-01')
+          and status=1
+
+        GROUP BY DATE_FORMAT(pay_time, '%m月%d日')
+        ORDER BY DATE_FORMAT(pay_time, '%m月%d日') ASC;
+    </select>
+    <select id="yearCount" resultType="com.longyi.shopping.entity.ChartPie">
+        SELECT
+            CONCAT(MONTH(pay_time), '月') AS name,
+            count(*) AS value
+        FROM goodsorder
+        WHERE YEAR(pay_time) = YEAR(CURDATE())
+          and status=1
+        GROUP BY MONTH(pay_time)
+        ORDER BY MONTH(pay_time) ASC
+    </select>
+
+    <select id="allCount" resultType="com.longyi.shopping.entity.ChartPie">
+        SELECT
+            CONCAT(YEAR(pay_time), '年') AS name,
+            count(*) AS value
+        FROM goodsorder
+        where
+            status=1
+
+        GROUP BY YEAR(pay_time)
+        ORDER BY YEAR(pay_time) ASC
+    </select>
+</mapper>
